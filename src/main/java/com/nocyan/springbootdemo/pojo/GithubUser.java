@@ -1,6 +1,6 @@
 package com.nocyan.springbootdemo.pojo;
 
-public class GithubUser {
+public class GithubUser extends OAuthUser {
     private String login;
     private String name;
     private long id;
@@ -37,14 +37,18 @@ public class GithubUser {
         this.login = login;
     }
 
+    @Override
     public String getName() {
-        return name;
+        if (name != null && !name.equals(""))
+            return name;
+        else return login;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public long getId() {
         return id;
     }
