@@ -1,6 +1,6 @@
 package com.nocyan.springbootdemo.controller;
 
-import com.nocyan.springbootdemo.pojo.OAuthUser;
+import com.nocyan.springbootdemo.pojo.oauthuser.OAuthUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +17,7 @@ public class IndexController {
     public String index(Model model, HttpServletRequest request) {
         OAuthUser oAuthUser = (OAuthUser) request.getSession().getAttribute("user");
         if (oAuthUser != null)
-            model.addAttribute("name", oAuthUser.getName());
+            model.addAttribute("name", oAuthUser.getOAuthName());
         model.addAttribute("githubHref", "https://github.com/login/oauth/authorize?client_id=" + clientId);
         return "index";
     }

@@ -1,6 +1,6 @@
 package com.nocyan.springbootdemo.controller;
 
-import com.nocyan.springbootdemo.pojo.GithubUser;
+import com.nocyan.springbootdemo.pojo.oauthuser.oauthuserimpl.GithubUser;
 import com.nocyan.springbootdemo.provider.GithubOAuthProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

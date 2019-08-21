@@ -2,7 +2,7 @@ package com.nocyan.springbootdemo.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import com.nocyan.springbootdemo.Util.HttpUtil;
-import com.nocyan.springbootdemo.pojo.GithubUser;
+import com.nocyan.springbootdemo.pojo.oauthuser.oauthuserimpl.GithubUser;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
