@@ -1,36 +1,36 @@
 package com.nocyan.springbootdemo.pojo;
 
 public class User {
-    private long uid;
-    private String username;
-    private String password;
+    private Long id;
     private String nickname;
+    private String headerImg;
+    private String bio;
 
     public User() {
     }
 
-    public long getUid() {
-        return uid;
+    public User(String nickname, String headerImg, String bio) {
+        this.nickname = nickname;
+        this.headerImg = headerImg;
+        this.bio = bio;
     }
 
-    public void setUid(long uid) {
-        this.uid = uid;
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", nickname='" + nickname + '\'' +
+                ", headerImg='" + headerImg + '\'' +
+                ", bio='" + bio + '\'' +
+                '}';
     }
 
-    public String getUsername() {
-        return username;
+    public Long getId() {
+        return id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNickname() {
@@ -39,5 +39,21 @@ public class User {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public String getHeaderImg() {
+        return headerImg;
+    }
+
+    public void setHeaderImg(String headerImg) {
+        this.headerImg = headerImg;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 }

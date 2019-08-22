@@ -29,19 +29,40 @@
             <button type="submit" class="btn btn-default">搜索</button>
         </form>
         <ul class="nav navbar-nav navbar-right">
-            <li th:if="${session.user}==null"><a th:href="${githubHref}">登录</a></li>
-            <li class="dropdown" th:if="${session.user}!=null">
+            <li th:unless="${islogin}"><a th:href="${githubHref}">登录</a></li>
+            <li class="dropdown" th:if="${islogin}">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                    aria-expanded="false" th:text="${name}">账号<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <li><a href="#">消息中心</a></li>
                     <li><a href="#">个人信息</a></li>
-                    <li><a href="/signout">退出登录</a></li>
+                    <li><a id="signout">退出登录</a></li>
                 </ul>
             </li>
         </ul>
-    </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
+    </div>
+    </div>
 </nav>
 </body>
+
+<script>
+    $("a#signout").click(function () {
+        $.ajax(
+            {
+                type:"DELETE",
+                url:"/login",
+                contentType: "application/json;charset=UTF-8",
+                success:function (data) {
+                    var status =JSON.parse(data).status;
+                    if(status==="success"){
+                        document.cookie = "identifier=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                        document.cookie = "nickname=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                        window.location.href="/"
+                    }
+                }
+
+            }
+        )
+    })
+</script>
 </html>

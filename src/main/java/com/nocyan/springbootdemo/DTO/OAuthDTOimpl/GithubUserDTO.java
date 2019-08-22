@@ -1,54 +1,50 @@
-package com.nocyan.springbootdemo.pojo.oauthuser.oauthuserimpl;
+package com.nocyan.springbootdemo.DTO.OAuthDTOimpl;
 
-import com.nocyan.springbootdemo.pojo.User;
-import com.nocyan.springbootdemo.pojo.oauthuser.OAuthUser;
+import com.nocyan.springbootdemo.DTO.OAuthDTO;
+import com.nocyan.springbootdemo.enums.AuthTypeEnum;
 
-public class GithubUser implements OAuthUser {
+public class GithubUserDTO implements OAuthDTO {
     private String login;
     private String name;
     private long githubUid;
     private String email;
     private String bio;
-    private long myuid;
 
-    public GithubUser() {
+    public GithubUserDTO() {
     }
 
-    public GithubUser(String login, String name, long githubUid, String email, String bio, long myuid) {
+    public GithubUserDTO(String login, String name, long githubUid, String email, String bio) {
         this.login = login;
         this.name = name;
         this.githubUid = githubUid;
         this.email = email;
         this.bio = bio;
-        this.myuid = myuid;
     }
 
     @Override
-    public long getOAuthId() {
-        return githubUid;
+    public String getIdentifier() {
+        return login;
     }
 
     @Override
-    public String getOAuthName() {
-        if (name != null && !name.equals(""))
-            return name;
-        else return login;
+    public String getCredential() {
+        return null;
     }
 
     @Override
-    public long getMyUserid() {
-        return myuid;
+    public AuthTypeEnum getAuthType() {
+        return AuthTypeEnum.GITHUB;
     }
+
 
     @Override
     public String toString() {
-        return "GithubUser{" +
+        return "GithubUserDTO{" +
                 "login='" + login + '\'' +
                 ", name='" + name + '\'' +
                 ", githubUid=" + githubUid +
                 ", email='" + email + '\'' +
                 ", bio='" + bio + '\'' +
-                ", myuid=" + myuid +
                 '}';
     }
 
@@ -72,7 +68,6 @@ public class GithubUser implements OAuthUser {
         return githubUid;
     }
 
-
     public void setGithubUid(long githubUid) {
         this.githubUid = githubUid;
     }
@@ -93,11 +88,4 @@ public class GithubUser implements OAuthUser {
         this.bio = bio;
     }
 
-    public long getMyuid() {
-        return myuid;
-    }
-
-    public void setMyuid(long myuid) {
-        this.myuid = myuid;
-    }
 }

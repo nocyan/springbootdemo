@@ -2,7 +2,7 @@ package com.nocyan.springbootdemo.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import com.nocyan.springbootdemo.Util.HttpUtil;
-import com.nocyan.springbootdemo.pojo.oauthuser.oauthuserimpl.GithubUser;
+import com.nocyan.springbootdemo.DTO.OAuthDTOimpl.GithubUserDTO;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +20,9 @@ public class GithubOAuthProvider {
     @Value("${github.client.secret}")
     private String clientSecret;
 
+    /*
+    * 通过github返回的random code取得accessToken
+    * */
     public String getAccessToken(String code) {
         MediaType mediaType=MediaType.get("application/json; charset=utf-8");
         String url="https://github.com/login/oauth/access_token";
@@ -42,13 +45,17 @@ public class GithubOAuthProvider {
         return null;
     }
 
-    public GithubUser getGithubUser(String accessToken){
+    /*
+    * 通过accessToken取得用户信息（json）
+    * 将用户信息（json）转化为github用户对象（DTO）
+    * */
+    public GithubUserDTO getGithubUser(String accessToken){
         String url="https://api.github.com/user";
         HashMap<String,String> headers=new HashMap<>();
         headers.put("Authorization","token "+accessToken);
         try {
             String responseStr=httpUtil.get(url,headers);
-            return JSONObject.parseObject(responseStr,GithubUser.class);
+            return JSONObject.parseObject(responseStr, GithubUserDTO.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
