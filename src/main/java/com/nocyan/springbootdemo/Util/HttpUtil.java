@@ -3,17 +3,21 @@ package com.nocyan.springbootdemo.Util;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class HttpUtil {
-    private OkHttpClient client = new OkHttpClient();
-//    private OkHttpClient client = new OkHttpClient.Builder()
-//            .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8888)))
-//            .build();
+    private OkHttpClient client = new OkHttpClient().newBuilder()
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .sslSocketFactory(SSLSocketClient.getSSLSocketFactory(),SSLSocketClient.getTrustManager())//配置
+            .hostnameVerifier(SSLSocketClient.getHostnameVerifier())//配置    //忽略验证证书
+            .build();
+
 
     public String get(String url) throws IOException {
         Request request = new Request.Builder()

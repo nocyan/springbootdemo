@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" class="h-100" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>登录</title>
+</head>
+
+<body class="d-flex h-100">
+<div class="container align-self-center">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card mb-3">
+                <h1 class="card-header bg-secondary text-light">登录</h1>
+                <div class="card-body">
+                    <form action="/">
+                        <div class="form-group">
+                            <label for="exampleInputUsername1">用户名</label>
+                            <input type="email" class="form-control" id="exampleInputUsername1"
+                                   aria-describedby="emailHelp" placeholder="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">密码</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1"
+                                   placeholder="Password">
+                        </div>
+                        <p><a th:href="${githubHref}">
+                            <small>github登录</small>
+                        </a></p>
+                        <p class="text-center"><a class="btn btn-primary btn-block btn-lg" id="signin">登录</a></p>
+                    </form>
+                </div>
+            </div>
+            <p class="text-center">
+                <small><a href="/signup">没有账号？注册一个</a></small>
+            </p>
+        </div>
+    </div>
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="js/jquery-3.4.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+<script>
+    $("#signin").click(function () {
+        var identifier = document.getElementById("exampleInputUsername1").value;
+        var credential = document.getElementById("exampleInputPassword1").value;
+        var userAuth = {"identifier": identifier, "credential": credential,"authType":1};
+        var json = {"operation": "sign in", "userAuth": userAuth};
+        var data = JSON.stringify(json);
+        $.ajax({
+            url: "/login",
+            type: "POST",
+            data: data,
+            contentType: "application/json;charset=UTF-8",
+            success: function (data) {
+                var status = JSON.parse(data).status;
+                if (status === "success") {
+                    window.location.href = "/";
+                }else {
+                    alert(JSON.parse(data).message);
+                }
+            }
+
+        });
+    })
+</script>
+</html>

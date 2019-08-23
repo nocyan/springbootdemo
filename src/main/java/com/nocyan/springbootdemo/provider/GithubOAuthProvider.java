@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 @Component
-public class GithubOAuthProvider {
+public class GithubOAuthProvider implements OAuthProvider{
     @Autowired
     private HttpUtil httpUtil;
     @Value("${github.client.id}")
@@ -34,9 +34,7 @@ public class GithubOAuthProvider {
         HashMap<String,String> headers=new HashMap<>();
         headers.put("Accept","application/json");
         try {
-            System.out.println(jsonStr);
             String responseStr = httpUtil.post(url,jsonStr,mediaType,headers);
-            System.out.println(responseStr);
             JSONObject responseJson= JSONObject.parseObject(responseStr);
             return responseJson.getString("access_token");
         } catch (IOException e) {
@@ -63,4 +61,8 @@ public class GithubOAuthProvider {
     }
 
 
+    @Override
+    public boolean checkAccessToken(String accessToken) {
+        return getGithubUser(accessToken).getLogin()!=null;
+    }
 }

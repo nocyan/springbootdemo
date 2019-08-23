@@ -1,5 +1,7 @@
 package com.nocyan.springbootdemo.controller;
 
+import com.nocyan.springbootdemo.service.ViewService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,7 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 @Controller
-public class IndexViewController {
+public class ViewController {
+    @Autowired
+    private ViewService viewService;
+
     @Value("${github.client.id}")
     private String clientId;
 
@@ -36,7 +41,23 @@ public class IndexViewController {
             model.addAttribute("name", nickname == null ? identifier : nickname);
             model.addAttribute("islogin",true);
         }
-        model.addAttribute("githubHref", "https://github.com/login/oauth/authorize?client_id=" + clientId);
+
         return "index";
     }
+
+    @GetMapping("/login")
+    public String loginView(Model model,HttpServletRequest request) {
+        if(viewService.checkLogin(request))
+            return "redirect:/";
+        model.addAttribute("githubHref", "https://github.com/login/oauth/authorize?client_id=" + clientId);
+        return "login";
+    }
+
+    @GetMapping("/signup")
+    public String signupView(HttpServletRequest request){
+        if(viewService.checkLogin(request))
+            return "redirect:/";
+        return "signup";
+    }
+
 }

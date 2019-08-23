@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>第三方登录认证</title>
+    <script src="../js/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+<input type="hidden" th:value="${identifier}" id="identifier">
+<input type="hidden" th:value="${accessToken}" id="accessToken">
+<input type="hidden" th:value="${authType}" id="authType">
+
+<div id="message"><p>认证中...</p></div>
+</body>
+
+
+
+<script>
+$(function () {
+    var identifier=document.getElementById("identifier").value;
+    var accessToken=document.getElementById("accessToken").value;
+    var authType=document.getElementById("authType").value;
+    var json={"identifier":identifier,"accessToken":accessToken,"authType":authType};
+    var data=JSON.stringify(json);
+    $.ajax({
+        url:"/login/OAuth",
+        type:"POST",
+        data:data,
+        contentType:"application/json;charset=UTF-8",
+        success:function (result) {
+            var status=JSON.parse(result).status;
+            if(status==="success"){
+                window.location.href="/";
+            }else {
+                document.getElementById("message").innerHTML="<p>认证失败<a href='/login'>回到登录界面</a></p>"
+            }
+        },
+        error:function () {
+            alert("客户端错误");
+            document.getElementById("message").innerHTML="<p>认证失败<a href='/login'>回到登录界面</a></p>"
+        }
+    })
+})
+</script>
+</html>
