@@ -37,9 +37,9 @@ public class LoginController {
         Cookie idCookie = new Cookie("identifier", userAuth.getIdentifier());
         idCookie.setPath("/");
         response.addCookie(idCookie);
-        Cookie nameCookie = new Cookie("nickname", user.getNickname());
-        nameCookie.setPath("/");
-        response.addCookie(nameCookie);
+        Cookie typeCookie = new Cookie("auth_type", userAuth.getAuthType().toString());
+        typeCookie.setPath("/");
+        response.addCookie(typeCookie);
         return ControllerUtil.setSuccessMessage(responseJson,"sign in",user).toJSONString();
     }
 
@@ -49,7 +49,7 @@ public class LoginController {
         //遍历cookies，删除登录信息
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
-            if (Objects.equals(cookie.getName(), "nickname")) {
+            if (Objects.equals(cookie.getName(), "auth_type")) {
                 cookie.setMaxAge(0);
             }
             if (Objects.equals(cookie.getName(), "identifier")) {
@@ -91,9 +91,9 @@ public class LoginController {
         Cookie idCookie = new Cookie("identifier", userAuth.getIdentifier());
         idCookie.setPath("/");
         response.addCookie(idCookie);
-        Cookie nameCookie = new Cookie("nickname", user.getNickname());
-        nameCookie.setPath("/");
-        response.addCookie(nameCookie);
+        Cookie typeCookie = new Cookie("auth_type", userAuth.getAuthType().toString());
+        typeCookie.setPath("/");
+        response.addCookie(typeCookie);
         //设置返回信息
         return ControllerUtil.setSuccessMessage(responseJson,"OAuth sign in",user).toJSONString();
     }

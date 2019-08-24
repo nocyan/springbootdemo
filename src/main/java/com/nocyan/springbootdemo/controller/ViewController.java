@@ -1,5 +1,6 @@
 package com.nocyan.springbootdemo.controller;
 
+import com.nocyan.springbootdemo.pojo.User;
 import com.nocyan.springbootdemo.service.ViewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,9 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Objects;
 
 @Controller
 public class ViewController {
@@ -21,42 +20,32 @@ public class ViewController {
 
     @GetMapping("/")
     public String index(Model model, HttpServletRequest request) {
-        model.addAttribute("islogin",false);
-        Cookie[] cookies = request.getCookies();
-        String identifier = null;
-        String nickname = null;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (nickname != null && identifier != null) break;
-
-                if (Objects.equals(cookie.getName(), "identifier")) {
-                    identifier = cookie.getValue();
-                }
-                if (Objects.equals(cookie.getName(), "nickname")) {
-                    nickname = cookie.getValue();
-                }
-            }
+        model.addAttribute("islogin", false);
+        User user = viewService.getUserFromCookie(request);
+        if (user != null) {
+            model.addAttribute("name", user.getNickname());
+            model.addAttribute("islogin", true);
         }
-        if (identifier != null){
-            model.addAttribute("name", nickname == null ? identifier : nickname);
-            model.addAttribute("islogin",true);
-        }
-
+        viewService.removeUser(request);
         return "index";
     }
 
     @GetMapping("/login")
-    public String loginView(Model model,HttpServletRequest request) {
-        if(viewService.checkLogin(request))
+    public String loginView(Model model, HttpServletRequest request) {
+        if (viewService.getUserFromCookie(request) != null) {
+            viewService.removeUser(request);
             return "redirect:/";
+        }
         model.addAttribute("githubHref", "https://github.com/login/oauth/authorize?client_id=" + clientId);
         return "login";
     }
 
     @GetMapping("/signup")
-    public String signupView(HttpServletRequest request){
-        if(viewService.checkLogin(request))
+    public String signupView(HttpServletRequest request) {
+        if (viewService.getUserFromCookie(request) != null) {
+            viewService.removeUser(request);
             return "redirect:/";
+        }
         return "signup";
     }
 
