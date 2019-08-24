@@ -28,7 +28,6 @@ public class LoginController {
     public String login(@RequestBody JSONObject json,HttpServletResponse response) {
         JSONObject responseJson=new JSONObject();
         UserAuth userAuth= json.getObject("userAuth",UserAuth.class);
-        System.out.println(userAuth);
         long uid=userService.verifyUserAuth(userAuth);
         if(uid==-1){
             return ControllerUtil.setErrorMessage(responseJson,"user auth error").toJSONString();
@@ -79,12 +78,11 @@ public class LoginController {
             return ControllerUtil.setErrorMessage(responseJson, "auth type error").toJSONString();
         }
 
-        //将DTO转化为userAuth
         UserAuth userAuth = null;
         try {
             userAuth = userService.checkAndInitOAuthUserAuth(authType, identifier);
         } catch (UserException e) {
-            return ControllerUtil.setErrorMessage(responseJson, "unknown error").toJSONString();
+            return ControllerUtil.setErrorMessage(responseJson, e.getMessage()).toJSONString();
         }
         User user = userService.getUser(userAuth.getUid());
         //设置cookie

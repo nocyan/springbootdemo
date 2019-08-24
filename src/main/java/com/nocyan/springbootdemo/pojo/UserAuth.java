@@ -1,20 +1,25 @@
 package com.nocyan.springbootdemo.pojo;
 
+import java.sql.Timestamp;
+
 public class UserAuth {
     private Long id;
     private Long uid;
     private Integer authType;
     private String identifier;
     private String credential;
+    private Long createTime;
+    private Timestamp updateTime;
 
     public UserAuth() {
     }
 
-    public UserAuth(Long uid, Integer authType, String identifier, String credential) {
+    public UserAuth(Long uid, Integer authType, String identifier, String credential,Long createTime) {
         this.uid = uid;
         this.authType = authType;
         this.identifier = identifier;
         this.credential = credential;
+        this.createTime=createTime;
     }
 
     @Override
@@ -25,6 +30,8 @@ public class UserAuth {
                 ", authType=" + authType +
                 ", identifier='" + identifier + '\'' +
                 ", credential='" + credential + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
                 '}';
     }
 
@@ -66,5 +73,21 @@ public class UserAuth {
 
     public void setCredential(String credential) {
         this.credential = credential;
+    }
+
+    public Long getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Long createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 }

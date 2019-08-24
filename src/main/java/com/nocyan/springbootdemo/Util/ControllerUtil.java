@@ -11,10 +11,10 @@ public class ControllerUtil {
         return json;
     }
 
-    public static JSONObject setSuccessMessage(JSONObject json, String operation, User user) {
+    public static <T> JSONObject setSuccessMessage (JSONObject json, String operation, T t) {
         json.put("status", "success");
         json.put("operation", operation);
-        json.put("user",user);
+        json.put("data",t);
         return json;
     }
 }

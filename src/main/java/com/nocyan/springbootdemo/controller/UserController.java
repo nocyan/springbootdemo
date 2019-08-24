@@ -25,10 +25,6 @@ public class UserController {
     public String signUp(@RequestBody JSONObject json, HttpServletResponse response){
         JSONObject responseJson=new JSONObject();
         UserAuth userAuth= json.getObject("userAuth",UserAuth.class);
-        User user=new User();
-        user.setNickname(userAuth.getIdentifier());
-        userAuth.setUid(userService.registerUser(user));
-        System.out.println(userAuth);
         try {
             userService.registerUserAuth(userAuth);
         } catch (UserException e) {
@@ -37,10 +33,10 @@ public class UserController {
         Cookie idCookie = new Cookie("identifier", userAuth.getIdentifier());
         idCookie.setPath("/");
         response.addCookie(idCookie);
-        Cookie nameCookie = new Cookie("nickname", user.getNickname());
+        Cookie nameCookie = new Cookie("auth_type", userAuth.getAuthType().toString());
         nameCookie.setPath("/");
         response.addCookie(nameCookie);
-        return ControllerUtil.setSuccessMessage(responseJson,"sign up",user).toJSONString();
+        return ControllerUtil.setSuccessMessage(responseJson,"sign up",userService.getUser(userAuth.getUid())).toJSONString();
     }
 
 }

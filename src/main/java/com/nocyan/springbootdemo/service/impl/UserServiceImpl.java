@@ -9,7 +9,10 @@ import com.nocyan.springbootdemo.provider.OAuthProvider;
 import com.nocyan.springbootdemo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.beans.Transient;
 import java.lang.reflect.Field;
 
 @Component
@@ -22,18 +25,25 @@ public class UserServiceImpl implements UserService {
         return userMapper.selectUser(id);
     }
 
-    @Override
-    public Long registerUser(User user) {
+    private Long registerUser(User user) {
         userMapper.insertUser(user);
         return user.getId();
     }
 
     @Override
+    @Transactional(propagation = Propagation.NESTED)
     public Long registerUserAuth(UserAuth userAuth) throws UserException {
         if (!checkNotNullUserAuth(userAuth))
             throw new UserException("user auth param error");
         if (checkExistUserAuth(userAuth))
             throw new UserException("user is already existed");
+        if(userAuth.getUid()==null) {
+            User user = new User();
+            user.setNickname(userAuth.getIdentifier());
+            user.setCreateTime(System.currentTimeMillis());
+            userAuth.setUid(registerUser(user));
+        }
+        userAuth.setCreateTime(System.currentTimeMillis());
         userMapper.insertUserAuth(userAuth);
         return userAuth.getId();
     }
@@ -65,13 +75,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserAuth checkAndInitOAuthUserAuth(Integer authType, String identifier) throws UserException {
         UserAuth userAuth = checkUserAuth(identifier, authType);
-        System.out.println(userAuth);
-        if (userAuth == null)
-            userAuth = new UserAuth(null, authType, identifier, null);
-        if (userAuth.getUid() == null) {
-            User user = new User();
-            user.setNickname(userAuth.getIdentifier());
-            userAuth.setUid(registerUser(user));
+        if (userAuth == null) {
+            userAuth = new UserAuth(null, authType, identifier, null,null);
             //注册账号认证
             registerUserAuth(userAuth);
         }
@@ -87,7 +92,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean checkNotNullUserAuth(UserAuth userAuth) {
-        return !(userAuth.getUid() == null || userAuth.getIdentifier() == null || userAuth.getAuthType() == null);
+        return !(userAuth.getIdentifier() == null || userAuth.getAuthType() == null);
     }
 
     private boolean checkExistUserAuth(UserAuth userAuth) {

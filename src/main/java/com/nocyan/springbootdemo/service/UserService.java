@@ -7,7 +7,6 @@ import com.nocyan.springbootdemo.provider.OAuthProvider;
 
 public interface UserService {
     User getUser(long id);
-    Long registerUser(User user);
     Long registerUserAuth(UserAuth userAuth) throws UserException;
     UserAuth checkUserAuth(String identifier,Integer authType);
     boolean checkOAuthAccessToken(String accessToken,Class<? extends OAuthProvider> providerClazz);
