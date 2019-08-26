@@ -4,7 +4,6 @@ import com.nocyan.springbootdemo.pojo.User;
 
 import javax.servlet.http.HttpServletRequest;
 
-public interface ViewService {
+public interface CookieService {
     User getUserFromCookie(HttpServletRequest request);
-    void removeUser(HttpServletRequest request);
 }

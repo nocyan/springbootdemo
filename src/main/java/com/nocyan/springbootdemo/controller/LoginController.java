@@ -30,7 +30,7 @@ public class LoginController {
         UserAuth userAuth= json.getObject("userAuth",UserAuth.class);
         long uid=userService.verifyUserAuth(userAuth);
         if(uid==-1){
-            return ControllerUtil.setErrorMessage(responseJson,"user auth error").toJSONString();
+            return ControllerUtil.setErrorMessage(responseJson,"user auth error");
         }
         User user=userService.getUser(uid);
         Cookie idCookie = new Cookie("identifier", userAuth.getIdentifier());
@@ -39,7 +39,7 @@ public class LoginController {
         Cookie typeCookie = new Cookie("auth_type", userAuth.getAuthType().toString());
         typeCookie.setPath("/");
         response.addCookie(typeCookie);
-        return ControllerUtil.setSuccessMessage(responseJson,"sign in",user).toJSONString();
+        return ControllerUtil.setSuccessMessage(responseJson,"sign in",user);
     }
 
     @DeleteMapping("/login")
@@ -55,7 +55,7 @@ public class LoginController {
                 cookie.setMaxAge(0);
             }
         }
-        return ControllerUtil.setSuccessMessage(json,"sign out",null).toJSONString();
+        return ControllerUtil.setSuccessMessage(json,"sign out",null);
     }
 
     @PostMapping("/login/OAuth")
@@ -66,23 +66,23 @@ public class LoginController {
         JSONObject responseJson = new JSONObject();
         if (identifier == null || accessToken == null || authType == null || !(AuthTypeEnum.checkType(authType) && AuthTypeEnum.isOAuth(authType))) {
             //登录失败
-            return ControllerUtil.setErrorMessage(responseJson, "param error").toJSONString();
+            return ControllerUtil.setErrorMessage(responseJson, "param error");
         }
 
         //通过accessToken验证用户真实性
         try {
             if (!userService.checkOAuthAccessToken(accessToken, AuthTypeEnum.getType(authType).getProviderClazz())) {
-                return ControllerUtil.setErrorMessage(responseJson, "illegal access token").toJSONString();
+                return ControllerUtil.setErrorMessage(responseJson, "illegal access token");
             }
         } catch (Exception e) {
-            return ControllerUtil.setErrorMessage(responseJson, "auth type error").toJSONString();
+            return ControllerUtil.setErrorMessage(responseJson, "auth type error");
         }
 
         UserAuth userAuth = null;
         try {
             userAuth = userService.checkAndInitOAuthUserAuth(authType, identifier);
         } catch (UserException e) {
-            return ControllerUtil.setErrorMessage(responseJson, e.getMessage()).toJSONString();
+            return ControllerUtil.setErrorMessage(responseJson, e.getMessage());
         }
         User user = userService.getUser(userAuth.getUid());
         //设置cookie
@@ -93,7 +93,7 @@ public class LoginController {
         typeCookie.setPath("/");
         response.addCookie(typeCookie);
         //设置返回信息
-        return ControllerUtil.setSuccessMessage(responseJson,"OAuth sign in",user).toJSONString();
+        return ControllerUtil.setSuccessMessage(responseJson,"OAuth sign in",user);
     }
 
 

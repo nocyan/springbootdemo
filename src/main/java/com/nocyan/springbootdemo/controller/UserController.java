@@ -28,7 +28,7 @@ public class UserController {
         try {
             userService.registerUserAuth(userAuth);
         } catch (UserException e) {
-            return ControllerUtil.setErrorMessage(responseJson,e.getMessage()).toJSONString();
+            return ControllerUtil.setErrorMessage(responseJson,e.getMessage());
         }
         Cookie idCookie = new Cookie("identifier", userAuth.getIdentifier());
         idCookie.setPath("/");
@@ -36,7 +36,7 @@ public class UserController {
         Cookie nameCookie = new Cookie("auth_type", userAuth.getAuthType().toString());
         nameCookie.setPath("/");
         response.addCookie(nameCookie);
-        return ControllerUtil.setSuccessMessage(responseJson,"sign up",userService.getUser(userAuth.getUid())).toJSONString();
+        return ControllerUtil.setSuccessMessage(responseJson,"sign up",userService.getUser(userAuth.getUid()));
     }
 
 }
