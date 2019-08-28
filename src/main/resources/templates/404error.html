@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>404error</title>
+</head>
+<body>
+<p>未找到页面，三秒后跳转回首页</p>
+</body>
+<script>
+    window.onload = function () {
+        setTimeout(function () {
+            window.location.href = "/";
+        }, 3000)
+    };
+</script>
+</html>

@@ -21,7 +21,10 @@ public interface ThemeMapper {
 
     @Select("select * from theme where uid = #{uid}")
     @Results({
-            @Result(property = "uid",column = "id",one = @One(select = "com.nocyan.springbootdemo.mapper.UserMapper.selectUser"))
+            @Result(property = "uid",column = "uid"),
+            @Result(property = "replyCount" ,column = "reply_count"),
+            @Result(property = "createTime",column = "create_time"),
+            @Result(property = "updateTime",column = "update_time")
     })
     List<Theme> selectThemeListByUid(Long uid);
 }

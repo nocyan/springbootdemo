@@ -8,6 +8,7 @@ import com.nocyan.springbootdemo.service.ThemeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 
 @Component
@@ -30,5 +31,10 @@ public class ThemeServiceImpl implements ThemeService {
     @Override
     public Long addTheme(Theme theme) {
         return themeMapper.insertTheme(theme);
+    }
+
+    @Override
+    public List<Theme> getUserThemes(Long uid) {
+        return themeMapper.selectThemeListByUid(uid);
     }
 }
