@@ -9,10 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class CookieServiceImpl implements CookieService {
     @Override
-    public User getUserFromCookie(HttpServletRequest request) {
-        User user=(User) request.getSession().getAttribute("user");
+    public User getUserFromSession(HttpServletRequest request) {
+        return (User) request.getSession().getAttribute("user");
+    }
+
+    @Override
+    public void removeUserFromSession(HttpServletRequest request) {
         request.getSession().removeAttribute("user");
-        return user;
     }
 
 }

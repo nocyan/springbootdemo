@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>userInfo</title>
+    <title th:text="${nickname}"></title>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/bootstrap-theme.min.css">
     <script src="../js/jquery-3.4.1.min.js"></script>
@@ -12,12 +12,25 @@
 </head>
 
 <body>
-<div class="container-fluid" style="margin: 1% 3%">
+
+<div class="myheader" th:include="header.html ::myheader"></div>
+<div class="container-fluid content" style="margin: 1% 3%">
     <div class="row">
         <div class="userinfo col-md-4 col-xs-12">
-            <img id="head" th:src="'../'+${headimg}">
-            <h1 id="nickname" th:text="${nickname}">nickname</h1>
-            <p id="bio" th:text="bio">bio</p>
+            <img id="head" th:src="'../img/userHeader/'+${headimg}+'.jpg'">
+            <input type="hidden" id="headerFileName" value="">
+            <input type="hidden" id="uid" th:value="${uid}">
+            <div id="uploadHeader">
+            </div>
+            <div id="nickname">
+            <h1 th:text="${nickname}">nickname</h1>
+            </div>
+            <div id="bio">
+            <p th:text="${bio}">bio</p>
+            </div>
+            <div th:if="${login}" id="loginuser">
+                <button type="button" class="btn btn-primary" id="update" onclick="update()">修改资料</button>
+            </div>
         </div>
 
 
@@ -58,7 +71,7 @@
         width: 35vh;
     }
 
-    .container-fluid {
+    .container-fluid.content {
         border: 1px solid rgb(204, 203, 203);
         border-radius: 1rem;
         padding: 1rem;
@@ -74,9 +87,19 @@
     .userinfo {
         padding: 3%;
     }
+    li span.current {
+        display: inline-block;
+        background-color: #ddd;
+    }
 </style>
 <script>
-    $(getThemes(1))
+    $(init())
+
+    function init(){
+        getThemes(1);
+        var headerImg = document.getElementById("head").getAttribute("src").split("img/")[1].split(".jpg")[0];
+        document.getElementById("headerFileName").value = headerImg;
+    }
 
     function getThemes(page) {
         $.ajax({
@@ -101,13 +124,14 @@
     }
 
     function getUid() {
+        var uid=document.getElementById('uid');
         var query = window.location.href;
         var vars = query.split("/");
-        return vars[vars.length - 1].split("?")[0];
+        return uid===null?vars[vars.length - 1].split("?")[0]:uid.value;
     }
 
     function cleanThemeDiv() {
-        document.getElementById("themes").innerHTML="";
+        document.getElementById("themes").innerHTML = "";
     }
 
     function addThemeDiv(theme) {
@@ -128,7 +152,7 @@
     }
 
     function addPaginator(num, currentPage) {
-        var pageNum = parseInt(num / 5)+1;
+        var pageNum = parseInt(num / 5) + 1;
         $("#paginator").createPage({
             pageCount: pageNum,
             current: currentPage,
@@ -137,6 +161,80 @@
             }
         });
 
+    }
+
+    function headerUpload() {
+        var formData = new FormData();
+        var name = document.getElementById("uploadHeader").getElementsByTagName("input")[0].value;
+        formData.append("file", document.getElementById("uploadHeader").getElementsByTagName("input")[0].files[0]);
+        formData.append("name", name);
+        $.ajax({
+            url: "/user/header_img",
+            type: "POST",
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function(result) {
+                console.log(result);
+                var status = JSON.parse(result).status;
+                if (status === "success") {
+                    document.getElementById("headerFileName").value = JSON.parse(result).data;
+                } else {
+                    alert("上传失败");
+                }
+            },
+            error: function() {
+                alert("客户端错误");
+            }
+        })
+    }
+
+    function update() {
+        document.getElementById("loginuser").innerHTML = '<button type="button" class="btn btn-primary" id="submit" onclick="submit()">确认修改</button><button type="button" class="btn btn-primary" id="cancle" onclick="cancle()">取消修改</button>';
+        var nickname = document.getElementById("nickname").getElementsByTagName("h1")[0].innerText;
+        var bio = document.getElementById("bio").getElementsByTagName("p")[0].innerText;
+        document.getElementById("nickname").innerHTML = '<input type="text" class="form-control" value="' + nickname + '" placeholder="' + nickname + '">';
+        document.getElementById("bio").innerHTML = '<textarea class="form-control" rows="3" value="' + bio + '" placeholder="' + bio + '">' + bio + '</textarea>';
+        document.getElementById("uploadHeader").innerHTML = '<input type="file" id="headUploader"><button type="button" class="btn btn-primary" onclick="headerUpload()">上传头像</button>';
+    }
+
+    function submit() {
+        var nickname = document.getElementById("nickname").getElementsByTagName("input")[0].value;
+        var bio = document.getElementById("bio").getElementsByTagName("textarea")[0].value;
+        var headerImg = document.getElementById("headerFileName").value;
+        var json = {
+            "nickname": nickname,
+            "bio": bio,
+            "headerImg": headerImg
+        };
+        var data = JSON.stringify(json);
+        $.ajax({
+            url: "/user",
+            type: "PUT",
+            data: data,
+            contentType: "application/json;charset=UTF-8",
+            success: function(result) {
+                var status = JSON.parse(result).status;
+                if (status === "success") {
+                    location.reload();
+                } else {
+                    alert("修改失败");
+                }
+            },
+            error: function() {
+                alert("客户端错误");
+            }
+        })
+        console.log(data);
+    }
+
+    function cancle() {
+        document.getElementById("loginuser").innerHTML = '<button type="button" class="btn btn-primary" id="update" onclick="update()">修改资料</button>';
+        var nickname = document.getElementById("nickname").getElementsByTagName("input")[0].getAttribute("placeholder");
+        var bio = document.getElementById("bio").getElementsByTagName("textarea")[0].getAttribute("placeholder");
+        document.getElementById("nickname").innerHTML = '<h1>' + nickname + '</h1>';
+        document.getElementById("bio").innerHTML = '<p>' + bio + '</p>';
+        document.getElementById("uploadHeader").innerHTML = "";
     }
 </script>
 </html>

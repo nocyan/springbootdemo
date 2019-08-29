@@ -9,12 +9,10 @@ import com.nocyan.springbootdemo.pojo.Theme;
 import com.nocyan.springbootdemo.pojo.User;
 import com.nocyan.springbootdemo.service.CookieService;
 import com.nocyan.springbootdemo.service.ThemeService;
-import com.nocyan.springbootdemo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -30,7 +28,7 @@ public class ThemeController {
     public String addTheme(@RequestBody JSONObject json, HttpServletRequest request) {
         JSONObject responseJson = new JSONObject();
         try {
-            User user = cookieService.getUserFromCookie(request);
+            User user = cookieService.getUserFromSession(request);
             Theme theme = JSON.parseObject(json.toJSONString(), Theme.class);
             themeService.checkLoginAndTheme(user, theme);
             Long themeId = themeService.addTheme(theme);

@@ -1,5 +1,6 @@
 package com.nocyan.springbootdemo.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.nocyan.springbootdemo.Util.HttpUtil;
 import com.nocyan.springbootdemo.exception.UserException;
 import com.nocyan.springbootdemo.mapper.UserMapper;
@@ -37,7 +38,7 @@ public class UserServiceImpl implements UserService {
             throw new UserException("user auth param error");
         if (checkExistUserAuth(userAuth))
             throw new UserException("user is already existed");
-        if(userAuth.getUid()==null) {
+        if (userAuth.getUid() == null) {
             User user = new User();
             user.setNickname(userAuth.getIdentifier());
             user.setCreateTime(System.currentTimeMillis());
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserService {
     public UserAuth checkAndInitOAuthUserAuth(Integer authType, String identifier) throws UserException {
         UserAuth userAuth = checkUserAuth(identifier, authType);
         if (userAuth == null) {
-            userAuth = new UserAuth(null, authType, identifier, null,null);
+            userAuth = new UserAuth(null, authType, identifier, null, null);
             //注册账号认证
             registerUserAuth(userAuth);
         }
@@ -86,10 +87,32 @@ public class UserServiceImpl implements UserService {
     @Override
     public long verifyUserAuth(UserAuth userAuth) {
         long uid = -1;
-        UserAuth userAuth1=userMapper.selectUserAuth(userAuth.getIdentifier(), userAuth.getAuthType(), userAuth.getCredential());
-        if(userAuth1!=null)uid = userAuth1.getUid();
+        UserAuth userAuth1 = userMapper.selectUserAuth(userAuth.getIdentifier(), userAuth.getAuthType(), userAuth.getCredential());
+        if (userAuth1 != null) uid = userAuth1.getUid();
         return uid;
     }
+
+    @Override
+    public void updateUserInfo(User user, JSONObject json) throws UserException {
+        if (user == null || user.getId() == null) {
+            throw new UserException("user is null");
+        }
+        String temp;
+        if ((temp = json.getString("nickname")) != null) {
+            user.setNickname(temp);
+            temp = null;
+        }
+        if ((temp = json.getString("bio")) != null) {
+            user.setBio(temp);
+            temp = null;
+        }
+        if ((temp = json.getString("headerImg")) != null) {
+            user.setHeaderImg(temp);
+            temp = null;
+        }
+        userMapper.updateUser(user);
+    }
+
 
     private boolean checkNotNullUserAuth(UserAuth userAuth) {
         return !(userAuth.getIdentifier() == null || userAuth.getAuthType() == null);

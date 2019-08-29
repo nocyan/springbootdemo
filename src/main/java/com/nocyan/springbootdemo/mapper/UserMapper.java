@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface UserMapper {
+    //user
+
     @Options(useGeneratedKeys = true,keyProperty = "id", keyColumn = "id")
     @Insert("insert into user (nickname,header_img,bio,create_time) values (#{nickname},#{headerImg},#{bio},#{createTime})")
     void insertUser(User user);
@@ -17,6 +19,11 @@ public interface UserMapper {
             @Result(property = "updateTime",column = "update_time")
     })
     User selectUser(long id);
+
+    @Update("update user set nickname=#{nickname},bio=#{bio},header_img=#{headerImg} where id =#{id}")
+    void updateUser(User user);
+
+    //userAuth
 
     @Insert("insert into user_auth (uid,auth_type,identifier,credential,create_time) values (#{uid},#{authType},#{identifier},#{credential},#{createTime})")
     void insertUserAuth(UserAuth userAuth);

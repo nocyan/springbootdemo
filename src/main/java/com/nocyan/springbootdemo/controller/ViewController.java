@@ -19,21 +19,24 @@ public class ViewController {
     @Autowired
     private UserService userService;
 
-    private final String DEFAULT_HEADER_IMG = "img/default_headimg.jpg";
+    private final String DEFAULT_HEADER_IMG = "default_headimg.jpg";
     private final String DEFAULT_BIO = "无个人介绍";
 
     @Value("${github.client.id}")
     private String clientId;
 
+
     @GetMapping("/")
     public String indexView(Model model, HttpServletRequest request) {
         headerSupport(model, request);
+        cookieService.removeUserFromSession(request);
         return "index";
     }
 
     @GetMapping("/login")
     public String loginView(Model model, HttpServletRequest request) {
-        if (cookieService.getUserFromCookie(request) != null) {
+        if (cookieService.getUserFromSession(request) != null) {
+            cookieService.removeUserFromSession(request);
             return "redirect:/";
         }
         model.addAttribute("githubHref", "https://github.com/login/oauth/authorize?client_id=" + clientId);
@@ -42,7 +45,8 @@ public class ViewController {
 
     @GetMapping("/signup")
     public String signupView(HttpServletRequest request) {
-        if (cookieService.getUserFromCookie(request) != null) {
+        if (cookieService.getUserFromSession(request) != null) {
+            cookieService.removeUserFromSession(request);
             return "redirect:/";
         }
         return "signup";
@@ -51,12 +55,14 @@ public class ViewController {
     @GetMapping("/themepublish")
     public String themepublishView(Model model, HttpServletRequest request) {
         headerSupport(model, request);
+        cookieService.removeUserFromSession(request);
         return "themepublish";
     }
 
     @GetMapping("/users/{uid}")
     public String userInfoView(@PathVariable String uid, Model model, HttpServletRequest request) {
         headerSupport(model, request);
+        cookieService.removeUserFromSession(request);
         Long id;
         try {
             id = Long.valueOf(uid);
@@ -75,9 +81,27 @@ public class ViewController {
         return "userinfo";
     }
 
+    @GetMapping("/user")
+    public String myUserInfoView(Model model, HttpServletRequest request) {
+        headerSupport(model, request);
+        User user=cookieService.getUserFromSession(request);
+        cookieService.removeUserFromSession(request);
+        if(user==null){
+            return "redirect:/login";
+        }
+        model.addAttribute("login",true);
+        model.addAttribute("uid",user.getId());
+        String headerImg = user.getHeaderImg();
+        String bio = user.getBio();
+        model.addAttribute("headimg", headerImg == null ? DEFAULT_HEADER_IMG : headerImg);
+        model.addAttribute("nickname", user.getNickname());
+        model.addAttribute("bio", bio == null ? DEFAULT_BIO : bio);
+        return "userinfo";
+    }
+
     private void headerSupport(Model model, HttpServletRequest request) {
         model.addAttribute("islogin", false);
-        User user = cookieService.getUserFromCookie(request);
+        User user = cookieService.getUserFromSession(request);
         if (user != null) {
             model.addAttribute("name", user.getNickname());
             model.addAttribute("islogin", true);
