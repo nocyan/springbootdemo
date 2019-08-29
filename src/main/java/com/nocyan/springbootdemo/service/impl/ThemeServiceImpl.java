@@ -34,7 +34,17 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
+    public Integer getUserThemesCount(Long uid) {
+        return themeMapper.selectThemeCountByUid(uid);
+    }
+
+    @Override
     public List<Theme> getUserThemes(Long uid) {
         return themeMapper.selectThemeListByUid(uid);
+    }
+
+    @Override
+    public List<Theme> getUserThemesByPage(Long uid, Integer page, Integer limit) {
+        return themeMapper.selectThemeListByUidLimit(uid,(page-1)*limit,limit);
     }
 }

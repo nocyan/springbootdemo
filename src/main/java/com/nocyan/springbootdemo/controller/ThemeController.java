@@ -41,20 +41,21 @@ public class ThemeController {
     }
 
     @GetMapping("/themes/{uid}")
-    public String listUserThemes(@PathVariable String uid){
+    public String listUserThemes(@PathVariable String uid,@RequestParam(name="page") String rawPage){
         JSONObject responseJson=new JSONObject();
         Long id;
+        Integer page;
         try {
             id = Long.valueOf(uid);
+            page=Integer.valueOf(rawPage);
         } catch (NumberFormatException e) {
             return ControllerUtil.setErrorMessage(responseJson,"param is illegal");
         }
-        List<Theme> themes=new ArrayList<Theme>();
-        themes=themeService.getUserThemes(id);
+        List<Theme> themes=themeService.getUserThemesByPage(id,page,5);
         ListDTO<Theme> listDTO=new ListDTO<>();
         listDTO.setContent("theme");
         listDTO.setList(themes);
-        listDTO.setNum(themes.size());
+        listDTO.setNum(themeService.getUserThemesCount(id));
         return ControllerUtil.setSuccessMessage(responseJson,"get user's themes",listDTO);
     }
 }

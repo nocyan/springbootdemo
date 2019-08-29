@@ -19,12 +19,23 @@ public interface ThemeMapper {
     })
     Theme selectThemeById(Long id);
 
+    @Select("select count(*) from theme where uid = #{uid}")
+    Integer selectThemeCountByUid(Long uid);
+
     @Select("select * from theme where uid = #{uid}")
+    @Results({
+            @Result(property = "replyCount" ,column = "reply_count"),
+            @Result(property = "createTime",column = "create_time"),
+            @Result(property = "updateTime",column = "update_time")
+    })
+    List<Theme> selectThemeListByUid(Long uid);
+
+    @Select("select * from theme where uid = #{uid} limit #{start},#{limit}")
     @Results({
             @Result(property = "uid",column = "uid"),
             @Result(property = "replyCount" ,column = "reply_count"),
             @Result(property = "createTime",column = "create_time"),
             @Result(property = "updateTime",column = "update_time")
     })
-    List<Theme> selectThemeListByUid(Long uid);
+    List<Theme> selectThemeListByUidLimit(@Param("uid") Long uid,@Param("start") Integer start,@Param("limit") Integer limit);
 }
