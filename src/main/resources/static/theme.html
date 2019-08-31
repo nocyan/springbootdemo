@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>标题</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="myheader"></div>
+    <div class="container content">
+        <div class="title col-md-12">
+            <div id="title">
+                <h2><span class="label label-default">主题</span></h2>
+                <h3>标题</h3>
+            </div>
+            <hr>
+        </div>
+        <div class="floor col-md-12">
+
+
+
+            <div class="reply" id="reply-1">
+                <div class="media">
+                    <div class="media-left media-middle reply-user">
+                        <a href="#">
+                            <img class="media-object img-circle user-header" src="img/userHeader/default_headimg.jpg" alt="头像">
+                            <p>123</p>
+                        </a>
+                        <span class="label label-info">题主</span>
+                    </div>
+                    <div class="media-body reply-body bg-info">
+                        <div class="reply-text">
+                            <h4 class="media-heading">description</h4>
+                        </div>
+                        <hr style="background-color: black;height: 1px;border: none">
+                        <div class="reply-info">
+                            <p>1楼</p>
+                            <button type="button" class="btn btn-default btn-xs reply-btn" rpid="1">回复</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="reply" id="reply-2">
+                <div class="media">
+                    <div class="media-left media-middle reply-user">
+                        <a href="#">
+                            <img class="media-object img-circle user-header" src="img/userHeader/default_headimg.jpg" alt="头像">
+                            <p>123</p>
+                        </a>
+                    </div>
+                    <div class="media-body reply-body bg-info">
+                        <div class="reply-text">
+                            <h4 class="media-heading">reply</h4>
+                        </div>
+                        <hr style="background-color: black;height: 1px;border: none">
+                        <div class="reply-info">
+                            <p>2楼</p>
+                            <button type="button" class="btn btn-default btn-xs reply-btn" rpid="2">回复</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="reply" id="reply-3">
+                <div class="media">
+                    <div class="media-left media-middle reply-user">
+                        <a href="javascript:void(0);" onclick="locationReference('2')">
+                            <img class="media-object img-circle user-header" src="img/userHeader/default_headimg.jpg" alt="头像">
+                            <p>123</p>
+                        </a>
+                    </div>
+                    <div class="media-body reply-body bg-info">
+                        <div class="reply-text">
+                            <a class="reply-refer" href="#reply-2">
+                                <blockquote>
+                                    <p><span>2楼</span><span>123</span></p>：
+                                    <p>reply</p>
+                                </blockquote>
+                            </a>
+                            <h4 class="media-heading">reply</h4>
+                        </div>
+                        <hr style="background-color: black;height: 1px;border: none">
+                        <div class="reply-info">
+                            <p>3楼</p>
+                            <button type="button" class="btn btn-default btn-xs reply-btn" rpid="3">回复</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="submit col-md-12">
+            <hr>
+            <h3><span class="label label-default">回复</span></h3>
+            <textarea class="form-control" rows="5" wrap="soft" style="overflow-x:hidden" id="reply-submit"></textarea>
+            <button type="button" class="btn btn-primary" style="float:right;margin: 1rem 1rem" id="submit-btn">回复</button>
+        </div>
+    </div>
+</body>
+<style>
+    body {
+        background: radial-gradient(circle, rgb(117, 117, 117) 5%, rgb(189, 192, 192) 70%, rgb(255, 255, 255))
+    }
+    
+    .container.content {
+        border: 1px solid rgb(204, 203, 203);
+        border-radius: 1rem;
+        padding: 1rem;
+        margin-top: 1%;
+        margin-bottom: 3%;
+        background-color: rgb(255, 255, 255);
+    }
+    
+    .reply {
+        margin: 3rem 0;
+    }
+    
+    .reply-body {
+        border: 1px;
+        border-radius: 1rem;
+        padding: 1rem;
+    }
+    
+    .user-header {
+        height: 5rem;
+        width: 5rem;
+    }
+    
+    .reply-info {
+        float: right;
+    }
+    
+    .reply-info>* {
+        float: right;
+        margin: 0 2rem 0 0;
+    }
+    
+    .reply-user {
+        text-align: center;
+    }
+</style>
+<script>
+    $(".reply-btn").click(function() {
+        referReply(this.getAttribute("rpid"));
+    });
+
+    function locationReference(floor) {
+        window.location.hash = "#reply" + floor;
+    }
+
+    function referReply(rpid) {
+        console.log(rpid);
+    }
+</script>
+
+</html>
